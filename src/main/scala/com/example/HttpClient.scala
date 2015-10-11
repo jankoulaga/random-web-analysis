@@ -8,9 +8,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 
-/**
- * Created by janko on 09/10/15.
- */
+
 trait HttpClient {
   def get(url: String): Future[ClientResponse]
 }

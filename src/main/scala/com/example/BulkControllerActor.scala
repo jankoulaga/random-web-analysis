@@ -4,6 +4,7 @@ import java.util.UUID
 
 import akka.actor._
 
+
 class BulkControllerActor(limit: Int, url: String) extends Actor with ActorLogging with HttpClientProvider {
 
   import BulkControllerActor._

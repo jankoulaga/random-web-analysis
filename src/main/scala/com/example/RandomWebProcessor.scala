@@ -10,9 +10,6 @@ import com.example.BulkControllerActor.Shutdown
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-/**
- * Created by janko on 10/10/15.
- */
 class RandomWebProcessor(limit: Int, url: String)(implicit system: ActorSystem) {
   implicit val timeout = Timeout(5 minutes)
   lazy val DomainPattern = "(?:https?:\\/\\/)?(?:www\\.)?([A-Za-z0-9._%+-]+)/?.*".r

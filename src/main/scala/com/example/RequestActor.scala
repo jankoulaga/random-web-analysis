@@ -5,6 +5,7 @@ import akka.actor.{Actor, ActorLogging, Props}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.control.NonFatal
 
+
 class RequestActor(httpClient: HttpClient) extends Actor with ActorLogging {
 
   def receive = {
