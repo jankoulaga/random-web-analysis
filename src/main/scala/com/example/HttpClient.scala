@@ -1,7 +1,5 @@
 package com.example
 
-import java.net.ConnectException
-
 import dispatch._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -29,12 +27,13 @@ trait HttpClientComponent extends HttpClientProvider {
 }
 
 object AsyncClient extends HttpClient {
-  val http: Http = new Http().configure(_.setAllowPoolingConnection(true))
+  lazy val Timeout = 2000
+  val http: Http = new Http().configure(_.setConnectionTimeoutInMs(Timeout).setRequestTimeoutInMs(Timeout))
 
   def get(urlString: String): Future[ClientResponse] = {
     val response = for {
       redirectUrl <- redir(urlString)
-      result <- http(url(redirectUrl)).either
+      result <- http(url(redirectUrl).HEAD).either
     } yield handleResponse(result, redirectUrl)
     response.recover {
       case NonFatal(x) => ResponseWithError(x, "")
@@ -44,12 +43,11 @@ object AsyncClient extends HttpClient {
   def handleResponse(response: Either[Throwable, Res], url: String): ClientResponse = {
     response match {
       case Right(result) => ResponseWithStatus(result.getStatusCode, url)
-      case Left(x: ConnectException) => ResponseWithError(x, url)
       case Left(StatusCode(code)) => ResponseWithStatus(code, url)
       case Left(x) => ResponseWithError(x, url)
     }
   }
 
-  def redir(s: String) = http(url(s) > (x => x.getHeader("Location")))
+  def redir(s: String) = http(url(s).HEAD > (x => x.getHeader("Location")))
 
 }
